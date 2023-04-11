@@ -7,18 +7,21 @@ class CupView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cupSelected = ref.watch(selectedTeaProvider);
     final cupData = ref.watch(selectedTeaProvider);
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 20,
-        childAspectRatio: 2.5,
+        childAspectRatio: 3.5,
       ),
       itemCount: cupData?.size!.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+
+          },
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(

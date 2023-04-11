@@ -7,14 +7,15 @@ import 'package:tea_riverpod/model/customized_model.dart';
 class CustomizedViewModel extends StateNotifier<CustomizedData> {
   CustomizedViewModel() : super(CustomizedData(customerList: []));
 
-  Future loadCustomizedData() async {
+  loadCustomizedData() async {
     try {
       final customizedData =
           await rootBundle.loadString('assets/json/customized.json');
-      final customizedList = CustomizedData.fromJson(jsonDecode(customizedData));
+      final customizedList =
+          CustomizedData.fromJson(jsonDecode(customizedData));
       state = customizedList;
     } catch (error, st) {
-      print(st);
+      print('error $st');
     }
   }
 }

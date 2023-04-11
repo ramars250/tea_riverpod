@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tea_riverpod/provider/providers.dart';
 import 'package:tea_riverpod/view/cup_view.dart';
+import 'package:tea_riverpod/view/feed_view.dart';
 import 'package:tea_riverpod/view/ice_view.dart';
+import 'package:tea_riverpod/view/sweet_view.dart';
 
 class OrderView extends ConsumerWidget {
   OrderView({super.key});
@@ -90,10 +92,13 @@ class OrderView extends ConsumerWidget {
                       '甜度',
                       style: TextStyle(fontSize: 16),
                     ),
+                    const SweetView(),
                     const Text(
                       '配料',
                       style: TextStyle(fontSize: 16),
                     ),
+                    const FeedView(),
+                    const SizedBox(height: 10.0),
                     const Divider(
                       height: 1.5,
                       color: Colors.grey,
@@ -143,6 +148,7 @@ class OrderView extends ConsumerWidget {
                       ),
                     ),
                     Container(
+                      margin: const EdgeInsets.only(bottom: 5.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
                         color: Colors.lightBlue[300],
