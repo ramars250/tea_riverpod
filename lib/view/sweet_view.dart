@@ -10,6 +10,7 @@ class SweetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
+      final selectedSweetIndex = ref.watch(selectedSweetProvider);
       final customizedModel = ref.watch(customizedProvider);
       final customizedData = customizedModel.customerList;
       if (customizedData != null && customizedData.isNotEmpty) {
@@ -27,13 +28,16 @@ class SweetView extends StatelessWidget {
             ),
             itemCount: sweetData!.length,
             itemBuilder: (context, index) {
+              final isSelected = selectedSweetIndex == index;
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  ref.read(selectedSweetProvider.notifier).selectedSweet(index);
+                },
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.grey[300],
+                    color: isSelected ? Colors.green : Colors.grey[300],
                   ),
                   child: Text(
                     sweetData[index],

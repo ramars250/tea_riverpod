@@ -7,8 +7,9 @@ class CupView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cupSelected = ref.watch(selectedTeaProvider);
+    // final cupSelected = ref.watch(selectedTeaProvider);
     final cupData = ref.watch(selectedTeaProvider);
+    final selectedCupIndex = ref.watch(selectedCupProvider);
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -18,15 +19,17 @@ class CupView extends ConsumerWidget {
       ),
       itemCount: cupData?.size!.length,
       itemBuilder: (context, index) {
+        final isSelected = selectedCupIndex == index;
         return GestureDetector(
           onTap: () {
-
+            ref.read(selectedCupProvider.notifier).selectCup(index);
+            // ref.read(selectedCupProvider.notifier).resetCup();
           },
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300]),
+                color: isSelected ? Colors.green : Colors.grey[300]),
             child: Text(
               cupData!.size![index],
               style: const TextStyle(fontSize: 12),

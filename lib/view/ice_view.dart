@@ -9,6 +9,7 @@ class IceView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIceIndex = ref.watch(selectedIceProvider);
     final customizedModel = ref.watch(customizedProvider);
     final customizedData = customizedModel.customerList;
     if (customizedData != null && customizedData.isNotEmpty) {
@@ -26,13 +27,16 @@ class IceView extends ConsumerWidget {
           ),
           itemCount: iceData!.length,
           itemBuilder: (context, index) {
+            final isSelected = selectedIceIndex == index;
             return GestureDetector(
-              onTap: () {},
+              onTap: () {
+                ref.read(selectedIceProvider.notifier).selectedIce(index);
+              },
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey[300],
+                  color: isSelected ? Colors.green : Colors.grey[300],
                 ),
                 child: Text(
                   iceData[index],

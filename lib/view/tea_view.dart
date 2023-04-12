@@ -9,53 +9,108 @@ class TeaView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(
-      child: Consumer(
-        builder: (context, ref, child) {
-          final teaModel = ref.watch(teaViewModelProvider);
-          final teaList = teaModel.teaData;
-          return teaList != null
-              ? ListView.builder(
-                  itemCount: teaList.length,
-                  itemBuilder: (context, index) {
-                    final kindTitle = teaList[index].kindTitle;
-                    final items = teaList[index].items;
-                    return ExpansionTile(
-                      expandedCrossAxisAlignment: CrossAxisAlignment.end,
-                      maintainState: true,
-                      title: Text(kindTitle!),
-                      children: [
-                        items != null
-                            ? ListView.builder(
+    return Scaffold(
+      body: Center(
+        child: Consumer(
+          builder: (context, ref, child) {
+            final teaList = ref.watch(teaViewModelProvider);
+            return teaList.when(
+                data: (data) => ListView.builder(
+                      itemCount: data.teaData?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final tea = data.teaData![index];
+                        return ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.end,
+                          maintainState: true,
+                          title: Text(tea.kindTitle ?? 'unknown'),
+                          children: [
+                            if (tea.items != null)
+                              ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: items.length,
+                                itemCount: tea.items!.length,
                                 itemBuilder: (context, index) {
-                                  final item = items[index];
+                                  final item = tea.items![index];
                                   return ListTile(
-                                    leading: Text(item.itemTitle!),
+                                    leading: Text(item.itemTitle ?? 'unknown'),
                                     title: Text('冰:${item.coldPrice}'),
-                                    // subtitle: Text('價格: ${item.coldPrice}元'),
                                     trailing: item.hotPrice != null
                                         ? Text('熱:${item.hotPrice}')
                                         : null,
                                     textColor: Colors.black,
                                     onTap: () {
-                                      ref.read(selectedTeaProvider.notifier).state = items[index];
+                                      ref
+                                          .read(selectedTeaProvider.notifier)
+                                          .state = tea.items![index];
                                       showDialog(
                                           context: context,
                                           builder: (context) => OrderView());
                                     },
                                   );
                                 },
-                              )
-                            : const CircularProgressIndicator(),
-                      ],
-                    );
-                  })
-              : const CircularProgressIndicator();
-        },
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                error: (error, stackTrace) =>
+                    const Text('Error loading tea data'),
+                loading: () =>
+                    const Center(child: CircularProgressIndicator()));
+          },
+        ),
       ),
-    ));
+    );
   }
+// @override
+// Widget build(BuildContext context) {
+//   return Scaffold(body: Center(
+//     child: Consumer(
+//       builder: (context, ref, child) {
+//         final teaModel = ref.watch(teaViewModelProvider);
+//         final teaList = teaModel.teaData;
+//         return teaList != null
+//             ? ListView.builder(
+//                 itemCount: teaList.length,
+//                 itemBuilder: (context, index) {
+//                   final kindTitle = teaList[index].kindTitle;
+//                   final items = teaList[index].items;
+//                   return ExpansionTile(
+//                     expandedCrossAxisAlignment: CrossAxisAlignment.end,
+//                     maintainState: true,
+//                     title: Text(kindTitle!),
+//                     children: [
+//                       items != null
+//                           ? ListView.builder(
+//                               shrinkWrap: true,
+//                               physics: const NeverScrollableScrollPhysics(),
+//                               itemCount: items.length,
+//                               itemBuilder: (context, index) {
+//                                 final item = items[index];
+//                                 return ListTile(
+//                                   leading: Text(item.itemTitle!),
+//                                   title: Text('冰:${item.coldPrice}'),
+//                                   // subtitle: Text('價格: ${item.coldPrice}元'),
+//                                   trailing: item.hotPrice != null
+//                                       ? Text('熱:${item.hotPrice}')
+//                                       : null,
+//                                   textColor: Colors.black,
+//                                   onTap: () {
+//                                     ref.read(selectedTeaProvider.notifier).state = items[index];
+//                                     showDialog(
+//                                         context: context,
+//                                         builder: (context) => OrderView());
+//                                   },
+//                                 );
+//                               },
+//                             )
+//                           : const CircularProgressIndicator(),
+//                     ],
+//                   );
+//                 })
+//             : const CircularProgressIndicator();
+//       },
+//     ),
+//   ));
+// }
 }
