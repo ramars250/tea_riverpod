@@ -1,5 +1,7 @@
+// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tea_riverpod/model/cart_model.dart';
 import 'package:tea_riverpod/provider/providers.dart';
 import 'package:tea_riverpod/view/cup_view.dart';
 import 'package:tea_riverpod/view/feed_view.dart';
@@ -15,6 +17,7 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView> {
   final textController = TextEditingController();
+  int amount = 1;
 
   @override
   void dispose() {
@@ -27,6 +30,12 @@ class _OrderViewState extends State<OrderView> {
     return Consumer(builder: (context, ref, child) {
       final teaSelected = ref.watch(selectedTeaProvider);
       final teaList = ref.watch(teaViewModelProvider);
+      final cupData = ref.watch(selectedCupProvider.select((value) => value));
+      final customizedModel = ref.watch(customizedProvider);
+      final iceData = ref.watch(selectedIceProvider.select((value) => value));
+      final sweetData =
+          ref.watch(selectedSweetProvider.select((value) => value));
+      final feedData = ref.watch(selectedFeedProvider.select((value) => value));
       return teaList.when(
           data: (data) => Dialog(
                 child: Container(
@@ -124,12 +133,17 @@ class _OrderViewState extends State<OrderView> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  const Text('總金額元'),
+                                  Text(
+                                      '總金額元'),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            amount--;
+                                          });
+                                        },
                                         icon: const Icon(
                                           Icons.remove,
                                           color: Colors.red,
@@ -141,10 +155,14 @@ class _OrderViewState extends State<OrderView> {
                                           border:
                                               Border.all(color: Colors.grey),
                                         ),
-                                        child: const Text('test'),
+                                        child: Text(amount.toString()),
                                       ),
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            amount++;
+                                          });
+                                        },
                                         icon: const Icon(
                                           Icons.add,
                                           color: Colors.green,
@@ -171,7 +189,35 @@ class _OrderViewState extends State<OrderView> {
                             onPressed: () {
                               ref.read(selectedCupProvider.notifier).resetCup();
                               ref.read(selectedIceProvider.notifier).resetIce();
-                              ref.read(selectedSweetProvider.notifier).resetSweet();
+                              ref
+                                  .read(selectedSweetProvider.notifier)
+                                  .resetSweet();
+                              ref
+                                  .read(selectedFeedProvider.notifier)
+                                  .resetFeed();
+                              final order = CartModel(
+                                teaTitle: teaSelected!.itemTitle ?? '',
+                                cupType: teaSelected.size![cupData],
+                                iceLevel: customizedModel
+                                    .customerList![0].iceCubes![iceData],
+                                sweetLevel: customizedModel
+                                    .customerList![1].sewwtness![sweetData],
+                                feeds: feedData
+                                    .map((e) => e.title)
+                                    .whereType<String>()
+                                    .toList(),
+                                customerName: textController.text,
+                                totalPrice: ref.watch(totalPriceProvider),
+                                // cupData != 0
+                                //     ? (teaSelected.coldPrice! +
+                                //         20 +
+                                //         (feedData.map((e) => e.price).first)! +
+                                //         (feedData.map((e) => e.price).last)!)
+                                //     : teaSelected.coldPrice!,
+                              );
+                              print(order.totalPrice);
+                              // print(feedData.map((e) => e.price).last);
+                              print(ref.read(totalPriceProvider));
                               Navigator.pop(context);
                             },
                           ),

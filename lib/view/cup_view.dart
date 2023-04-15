@@ -23,7 +23,6 @@ class CupView extends ConsumerWidget {
         return GestureDetector(
           onTap: () {
             ref.read(selectedCupProvider.notifier).selectCup(index);
-            // ref.read(selectedCupProvider.notifier).resetCup();
           },
           child: Container(
             alignment: Alignment.center,

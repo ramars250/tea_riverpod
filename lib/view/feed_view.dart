@@ -9,6 +9,7 @@ class FeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
+      final selectedFeed = ref.watch(selectedFeedProvider);
       final customizedModel = ref.watch(customizedProvider);
       final customizedData = customizedModel.customerList;
       if (customizedData != null && customizedData.isNotEmpty) {
@@ -26,16 +27,25 @@ class FeedView extends StatelessWidget {
             ),
             itemCount: feedData!.length,
             itemBuilder: (context, index) {
+              final feed = feedData[index];
+              final isSelected = selectedFeed.contains(feed);
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  ref.read(selectedFeedProvider.notifier).toggleFeedSelected(feed);
+                  // if (isSelected) {
+                  //   ref.read(selectedFeedProvider.notifier).unselectFeed(feed);
+                  // } else {
+                  //   ref.read(selectedFeedProvider.notifier).selectFeed(feed);
+                  // }
+                },
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.grey[300],
+                    color: isSelected ? Colors.green : Colors.grey[300],
                   ),
                   child: Text(
-                    '${feedData[index].title}',
+                    '${feed.title}',
                     style: const TextStyle(fontSize: 12.0),
                   ),
                 ),

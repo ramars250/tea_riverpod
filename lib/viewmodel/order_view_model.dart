@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OrderViewModel extends StatelessWidget {
-  const OrderViewModel({Key? key}) : super(key: key);
+class OrderViewModel extends StateNotifier<Map<int, Map<String, String>>> {
+  OrderViewModel() : super({});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  void addToCart(int orderId, Map<String, String> options) {
+    state[orderId] = options;
+  }
+
+  void totelPrice() {
+
   }
 }
