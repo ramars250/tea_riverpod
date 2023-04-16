@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tea_riverpod/model/cart_model.dart';
 import 'package:tea_riverpod/provider/providers.dart';
-import 'package:tea_riverpod/view/cup_view.dart';
-import 'package:tea_riverpod/view/feed_view.dart';
-import 'package:tea_riverpod/view/ice_view.dart';
-import 'package:tea_riverpod/view/sweet_view.dart';
+import 'package:tea_riverpod/view/common.dart';
 
 class OrderView extends StatefulWidget {
   const OrderView({Key? key}) : super(key: key);
@@ -66,7 +63,12 @@ class _OrderViewState extends State<OrderView> {
                               child: IconButton(
                                 icon: const Icon(Icons.close),
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const CartView()));
+                                  // Navigator.pop(context);
                                 },
                               ),
                             ),
@@ -133,8 +135,7 @@ class _OrderViewState extends State<OrderView> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(
-                                      '總金額元'),
+                                  Text('總金額${ref.watch(totalPriceProvider) * amount}元'),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -187,14 +188,7 @@ class _OrderViewState extends State<OrderView> {
                               style: TextStyle(color: Colors.black),
                             ),
                             onPressed: () {
-                              ref.read(selectedCupProvider.notifier).resetCup();
-                              ref.read(selectedIceProvider.notifier).resetIce();
-                              ref
-                                  .read(selectedSweetProvider.notifier)
-                                  .resetSweet();
-                              ref
-                                  .read(selectedFeedProvider.notifier)
-                                  .resetFeed();
+                              // final cart = ref.read(cartProvider);
                               final order = CartModel(
                                 teaTitle: teaSelected!.itemTitle ?? '',
                                 cupType: teaSelected.size![cupData],
@@ -207,18 +201,34 @@ class _OrderViewState extends State<OrderView> {
                                     .whereType<String>()
                                     .toList(),
                                 customerName: textController.text,
-                                totalPrice: ref.watch(totalPriceProvider),
-                                // cupData != 0
-                                //     ? (teaSelected.coldPrice! +
-                                //         20 +
-                                //         (feedData.map((e) => e.price).first)! +
-                                //         (feedData.map((e) => e.price).last)!)
-                                //     : teaSelected.coldPrice!,
+                                totalPrice: (ref.watch(totalPriceProvider) * amount),
                               );
-                              print(order.totalPrice);
-                              // print(feedData.map((e) => e.price).last);
-                              print(ref.read(totalPriceProvider));
-                              Navigator.pop(context);
+                              final cart = ref.read(cartProvider.notifier);
+                              cart.addToCart(order);
+                              // cart.addItem(
+                              //   teaTitle: teaSelected!.itemTitle ?? '',
+                              //   cupType: teaSelected.size![cupData],
+                              //   iceLevel: customizedModel
+                              //       .customerList![0].iceCubes![iceData],
+                              //   sweetLevel: customizedModel
+                              //       .customerList![1].sewwtness![sweetData],
+                              //   feeds: feedData
+                              //       .map((e) => e.title)
+                              //       .whereType<String>()
+                              //       .toList(),
+                              //   customerName: textController.text,
+                              //   totalPrice: ref.watch(totalPriceProvider),
+                              // );
+                              ref.read(selectedCupProvider.notifier).resetCup();
+                              ref.read(selectedIceProvider.notifier).resetIce();
+                              ref
+                                  .read(selectedSweetProvider.notifier)
+                                  .resetSweet();
+                              ref
+                                  .read(selectedFeedProvider.notifier)
+                                  .resetFeed();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const CartView()));
+                              // Navigator.pop(context);
                             },
                           ),
                         ),

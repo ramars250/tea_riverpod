@@ -9,6 +9,7 @@ class TeaView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // int selectedIndex = 0;
     return Scaffold(
       body: Center(
         child: Consumer(
@@ -44,7 +45,8 @@ class TeaView extends StatelessWidget {
                                           .state = tea.items![index];
                                       showDialog(
                                           context: context,
-                                          builder: (context) => OrderView());
+                                          builder: (context) =>
+                                              const OrderView());
                                     },
                                   );
                                 },
@@ -60,6 +62,16 @@ class TeaView extends StatelessWidget {
           },
         ),
       ),
+
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(icon: Icon(Icons.home),
+      //     label: '首頁'),
+      //     BottomNavigationBarItem(icon: Icon(Icons.shopping_cart),
+      //     label: '購物車'),
+      //   ],
+      //
+      // ),
     );
   }
 // @override
